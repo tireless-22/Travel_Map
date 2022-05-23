@@ -1,5 +1,8 @@
 
-import {AiFillCloseCircle} from "react-icons/ai"
+import { AiFillCloseCircle } from "react-icons/ai"
+
+import { CgProfile } from "react-icons/cg"
+import {FaMapMarked} from "react-icons/fa"
 import "./App.css";
 import * as React from "react";
 import Map, { Marker, Popup } from "react-map-gl";
@@ -12,6 +15,84 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import styled from "styled-components"
 import Modal from "react-modal";
+
+
+
+const Navbar = styled.div`
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+
+
+
+
+`
+
+
+const LeftNav = styled.div`
+display:flex;
+justify-content: space-around;
+
+
+
+
+`
+
+const RightNav = styled.div`
+display:flex;
+justify-content: space-around;
+
+
+
+`
+
+
+const Profile = styled.div`
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  
+
+  border-radius: 10px;
+  background-color: red;
+  /* this section is created to display the user profile like what is his name and other things
+ and also for the places created by that user
+
+
+*/
+`;
+
+
+const Logout = styled.div`
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  border-radius: 10px;
+  background-color: red;
+`;
+
+
+
+
+const PinDetails = styled.div`
+  /* this pinDetails show the info about the pins that are created by different users */
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  border-radius: 10px;
+  background-color: red;
+`;
+
+
+
 
 
 const CloseButtonFlex = styled.div`
@@ -144,6 +225,62 @@ function App() {
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>
+      <Navbar>
+        <LeftNav>
+          <button
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          >
+            How to use?
+          </button>
+          <PinDetails>
+            Pins Info
+            <FaMapMarked />
+          </PinDetails>
+        </LeftNav>
+
+        <RightNav>
+          {currentUser ? (
+            <RightNav>
+              <Profile>
+                Profile <CgProfile />
+              </Profile>
+              <Logout onClick={handleLogout}>
+                Logout
+              </Logout>
+
+              {/* <button className="button logout" onClick={handleLogout}>
+                Log out
+              </button> */}
+            </RightNav>
+          ) : (
+            <RightNav>
+              <button
+                className="button login"
+                onClick={() => {
+                  setShowLogin(true);
+                  setShowRegister(false);
+                }}
+              >
+                Login
+              </button>
+              <button
+                className="button register"
+                onClick={() => {
+                  setShowRegister(true);
+                  setShowLogin(false);
+                }}
+              >
+                Register
+              </button>
+            </RightNav>
+          )}
+        </RightNav>
+      </Navbar>
+
+    
+
       <Map
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
         initialViewState={{
@@ -155,10 +292,7 @@ function App() {
         mapStyle="mapbox://styles/mapbox/streets-v9"
         onDblClick={handleAddClick}
       >
-
         console.log(pins);
-
-        
         {pins.map((p) => (
           <>
             <Marker longitude={p.long} latitude={p.lat} anchor="bottom">
@@ -180,11 +314,7 @@ function App() {
                 onClose={() => setCurrentPlaceId(null)}
                 anchor="left"
               >
-
-
-
                 <Card>
-
                   <label>Place</label>
                   <h4 className="place">{p.title}</h4>
                   <label>Review</label>
@@ -199,17 +329,10 @@ function App() {
                   </span>
                   <span className="date">Updated {format(p.updatedAt)}</span>
                 </Card>
-
-
-
-
-
-
               </Popup>
             )}
           </>
         ))}
-
         {newPlace && (
           <Popup
             latitude={newPlace.lat}
@@ -246,57 +369,8 @@ function App() {
             </div>
           </Popup>
         )}
-        {currentUser ? (
-          <div className="buttons">
-            <button
-              className="How_to_use"
-              onClick={() => {
-                setIsOpen(true);
-              }}
-            >
-              How to use?
-            </button>
-
-            <button className="button logout" onClick={handleLogout}>
-              Log out
-            </button>
-          </div>
-        ) : (
-          <div className="buttons">
-            <button
-              className="How_to_use"
-              onClick={() => {
-                setIsOpen(true);
-              }}
-            >
-              How to use?
-            </button>
-
-            <button
-              className="button login"
-              onClick={() => {
-                setShowLogin(true);
-                setShowRegister(false);
-              }}
-            >
-              Login
-            </button>
-            <button
-              className="button register"
-              onClick={() => {
-                setShowRegister(true);
-                setShowLogin(false);
-              }}
-            >
-              Register
-            </button>
-          </div>
-        )}
-
         {/* <button className="info" onClick={handleInfo}>TRAVEL MAP</button> */}
-
         {/* {(showRegister && loginDialog) ? <Register setShowRegister={setShowRegister} /> : null} */}
-
         <Modal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
@@ -309,11 +383,7 @@ function App() {
             </CloseButton>
           </CloseButtonFlex>
           <h1>Details about the project</h1>
-
-        
-          
         </Modal>
-
         {showRegister && <Register setShowRegister={setShowRegister} />}
         {showLogin && (
           <Login

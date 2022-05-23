@@ -8,9 +8,6 @@
 
 // export default App
 
-
-
-
 import "./App.css";
 import * as React from "react";
 import Map, { Marker, Popup } from "react-map-gl";
@@ -27,6 +24,9 @@ function App() {
   const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
   //   myStorage.getItem("user")
   // );
+
+  // const [loginDialog, setLoginDialog] = useState(false);
+
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
@@ -35,7 +35,10 @@ function App() {
   const [star, setRating] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [showLogin, setShowLogin] = React.useState(true);
+  const [showLogin, setShowLogin] = React.useState(false);
+
+  const [showUsage, setShowUsage] = useState(true);
+
   const [viewport, setViewport] = useState({
     latitude: 47.040182,
     longitude: 17.071727,
@@ -186,17 +189,35 @@ function App() {
           </Popup>
         )}
         {currentUser ? (
-          <button className="button logout" onClick={handleLogout}>
-            Log out
-          </button>
+          <div className="buttons">
+            <button className="How_to_use">
+              How to use?
+            </button>
+        
+            <button className="button logout" onClick={handleLogout}>
+              Log out
+            </button>
+          </div>
         ) : (
           <div className="buttons">
-            <button className="button login" onClick={() => setShowLogin(true)}>
+              <button className="How_to_use">
+                How to use?
+            </button>
+            <button
+              className="button login"
+              onClick={() => {
+                setShowLogin(true);
+                setShowRegister(false);
+              }}
+            >
               Login
             </button>
             <button
               className="button register"
-              onClick={() => setShowRegister(true)}
+              onClick={() => {
+                setShowRegister(true);
+                setShowLogin(false);
+              }}
             >
               Register
             </button>
@@ -204,6 +225,8 @@ function App() {
         )}
 
         {/* <button className="info" onClick={handleInfo}>TRAVEL MAP</button> */}
+
+        {/* {(showRegister && loginDialog) ? <Register setShowRegister={setShowRegister} /> : null} */}
 
         {showRegister && <Register setShowRegister={setShowRegister} />}
         {showLogin && (

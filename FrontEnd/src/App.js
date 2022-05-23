@@ -20,6 +20,8 @@ flex-direction: row-reverse;
 
 `
 
+
+
 const CloseButton = styled.div`
 padding: 5px;
 display: flex;
@@ -32,6 +34,18 @@ cursor:pointer;
 border-radius: 10px;
 background-color: red;
 `
+
+const Card = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  background-color: #63bab7;
+`;
+
+
+
+
+
 
 
 function App() {
@@ -47,7 +61,7 @@ function App() {
   const [newPlace, setNewPlace] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
-  const [star, setRating] = useState(0);
+  const [rating, setRating] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = React.useState(false);
@@ -59,6 +73,9 @@ function App() {
     longitude: 17.071727,
     zoom: 4,
   });
+
+
+  // console.log(star);
   
 
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -75,7 +92,7 @@ function App() {
   useEffect(() => {
     const getPins = async () => {
       try {
-        const res = await axios.get("/pins");
+        const res = await axios.get("http://localhost:8800/api/pins");
         setPins(res.data);
         console.log(res.data, "res");
       } catch (err) {
@@ -83,7 +100,7 @@ function App() {
       }
     };
     getPins();
-  });
+  }, []);
 
   const handleMarkerClick = (id, lat, long) => {
     setCurrentPlaceId(id);
@@ -112,12 +129,12 @@ function App() {
       username: currentUser,
       title,
       desc,
-      // rating,
+      rating,
       lat: newPlace.lat,
       long: newPlace.long,
     };
     try {
-      const res = await axios.post("/pins", newPin);
+      const res = await axios.post("http://localhost:8800/api/pins", newPin);
       setPins([...pins, res.data]);
       setNewPlace(null);
     } catch (err) {
@@ -163,7 +180,11 @@ function App() {
                 onClose={() => setCurrentPlaceId(null)}
                 anchor="left"
               >
-                <div className="card">
+
+
+
+                <Card>
+
                   <label>Place</label>
                   <h4 className="place">{p.title}</h4>
                   <label>Review</label>
@@ -177,7 +198,13 @@ function App() {
                     Created by <b>{p.username}</b>
                   </span>
                   <span className="date">Updated {format(p.updatedAt)}</span>
-                </div>
+                </Card>
+
+
+
+
+
+
               </Popup>
             )}
           </>

@@ -1,23 +1,38 @@
-// import React from 'react'
 
-// const App = () => {
-//   return (
-//     <div>App</div>
-//   )
-// }
-
-// export default App
-
+import {AiFillCloseCircle} from "react-icons/ai"
 import "./App.css";
 import * as React from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useState } from "react";
-import { Room, Star, StarBorder } from "@material-ui/icons";
+import { ControlCameraOutlined, Room, Star, StarBorder } from "@material-ui/icons";
 import axios from "axios";
 import { format } from "timeago.js";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import styled from "styled-components"
+import Modal from "react-modal";
+
+
+const CloseButtonFlex = styled.div`
+display:flex;
+flex-direction: row-reverse;
+
+`
+
+const CloseButton = styled.div`
+padding: 5px;
+display: flex;
+justify-content: center;
+align-items: center;
+cursor:pointer;
+
+
+
+border-radius: 10px;
+background-color: red;
+`
+
 
 function App() {
   const myStorage = window.localStorage;
@@ -44,7 +59,18 @@ function App() {
     longitude: 17.071727,
     zoom: 4,
   });
-  const [showInfo, setShowInfo] = useState(null);
+  
+
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
 
   useEffect(() => {
     const getPins = async () => {
@@ -57,7 +83,7 @@ function App() {
       }
     };
     getPins();
-  }, []);
+  });
 
   const handleMarkerClick = (id, lat, long) => {
     setCurrentPlaceId(id);
@@ -81,6 +107,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("clicked the submit button")
     const newPin = {
       username: currentUser,
       title,
@@ -111,6 +138,10 @@ function App() {
         mapStyle="mapbox://styles/mapbox/streets-v9"
         onDblClick={handleAddClick}
       >
+
+        console.log(pins);
+
+        
         {pins.map((p) => (
           <>
             <Marker longitude={p.long} latitude={p.lat} anchor="bottom">
@@ -190,19 +221,30 @@ function App() {
         )}
         {currentUser ? (
           <div className="buttons">
-            <button className="How_to_use">
+            <button
+              className="How_to_use"
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            >
               How to use?
             </button>
-        
+
             <button className="button logout" onClick={handleLogout}>
               Log out
             </button>
           </div>
         ) : (
           <div className="buttons">
-              <button className="How_to_use">
-                How to use?
+            <button
+              className="How_to_use"
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            >
+              How to use?
             </button>
+
             <button
               className="button login"
               onClick={() => {
@@ -227,6 +269,23 @@ function App() {
         {/* <button className="info" onClick={handleInfo}>TRAVEL MAP</button> */}
 
         {/* {(showRegister && loginDialog) ? <Register setShowRegister={setShowRegister} /> : null} */}
+
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Example Modal"
+        >
+          <CloseButtonFlex>
+            <CloseButton onClick={closeModal}>
+              Close
+              <AiFillCloseCircle size={20} color="blue" />
+            </CloseButton>
+          </CloseButtonFlex>
+          <h1>Details about the project</h1>
+
+        
+          
+        </Modal>
 
         {showRegister && <Register setShowRegister={setShowRegister} />}
         {showLogin && (

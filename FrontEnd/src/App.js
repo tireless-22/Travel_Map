@@ -47,7 +47,7 @@ justify-content: space-around;
 `
 
 
-const Profile = styled.div`
+const Profile = styled.button`
   padding: 5px;
   display: flex;
   justify-content: center;
@@ -79,7 +79,7 @@ const Logout = styled.div`
 
 
 
-const PinDetails = styled.div`
+const PinDetails = styled.button`
   /* this pinDetails show the info about the pins that are created by different users */
   padding: 5px;
   display: flex;
@@ -161,12 +161,23 @@ function App() {
 
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
+
+
+  const [modalHow, setModalHow] = useState(false);
+
+  const [modalPins, setModalPins] = useState(false);
+
+  const [modalProfile, setModalProfile] = useState(false);
+
   function openModal() {
-    setIsOpen(true);
+    setModalHow(true);
+
   }
 
   function closeModal() {
-    setIsOpen(false);
+    setModalHow(false);
+    setModalPins(false);
+    setModalProfile(false);
   }
 
 
@@ -229,12 +240,14 @@ function App() {
         <LeftNav>
           <button
             onClick={() => {
-              setIsOpen(true);
+              setModalHow(true);
             }}
           >
             How to use?
           </button>
-          <PinDetails>
+
+
+          <PinDetails onClick={()=>{setModalPins(true)}}>
             Pins Info
             <FaMapMarked />
           </PinDetails>
@@ -243,12 +256,10 @@ function App() {
         <RightNav>
           {currentUser ? (
             <RightNav>
-              <Profile>
+              <Profile onClick={()=>setModalProfile(true)}>
                 Profile <CgProfile />
               </Profile>
-              <Logout onClick={handleLogout}>
-                Logout
-              </Logout>
+              <Logout onClick={handleLogout}>Logout</Logout>
 
               {/* <button className="button logout" onClick={handleLogout}>
                 Log out
@@ -278,8 +289,6 @@ function App() {
           )}
         </RightNav>
       </Navbar>
-
-    
 
       <Map
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
@@ -372,7 +381,7 @@ function App() {
         {/* <button className="info" onClick={handleInfo}>TRAVEL MAP</button> */}
         {/* {(showRegister && loginDialog) ? <Register setShowRegister={setShowRegister} /> : null} */}
         <Modal
-          isOpen={modalIsOpen}
+          isOpen={modalHow}
           onRequestClose={closeModal}
           contentLabel="Example Modal"
         >
@@ -384,6 +393,41 @@ function App() {
           </CloseButtonFlex>
           <h1>Details about the project</h1>
         </Modal>
+
+
+        <Modal
+          isOpen={modalPins}
+          onRequestClose={closeModal}
+          contentLabel="Example Modal"
+        >
+          <CloseButtonFlex>
+            <CloseButton onClick={closeModal}>
+              Close
+              <AiFillCloseCircle size={20} color="blue" />
+            </CloseButton>
+          </CloseButtonFlex>
+          <h1>Details about the Pins</h1>
+        </Modal>
+
+
+
+        <Modal
+          isOpen={modalProfile}
+          onRequestClose={closeModal}
+          contentLabel="Example Modal"
+        >
+          <CloseButtonFlex>
+            <CloseButton onClick={closeModal}>
+              Close
+              <AiFillCloseCircle size={20} color="blue" />
+            </CloseButton>
+          </CloseButtonFlex>
+          <h1>Details about the profile</h1>
+        </Modal>
+
+
+
+
         {showRegister && <Register setShowRegister={setShowRegister} />}
         {showLogin && (
           <Login

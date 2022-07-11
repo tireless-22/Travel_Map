@@ -8,7 +8,7 @@ import * as React from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useState } from "react";
-import { ControlCameraOutlined, Room, Star, StarBorder } from "@material-ui/icons";
+import { ControlCameraOutlined, Room, Star, StarBorder, SystemUpdate } from "@material-ui/icons";
 import axios from "axios";
 import { format } from "timeago.js";
 import Register from "./components/Register";
@@ -30,12 +30,38 @@ justify-content: space-between;
 
 
 const LeftNav = styled.div`
+
 display:flex;
 justify-content: space-around;
 
 
 
 
+`
+
+const HowToUse = styled.button`
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 5px;
+
+  border-radius: 10px;
+  /* background-color: red; */
+`;
+
+
+const MiddleNav = styled.div`
+display: flex;
+
+
+
+`
+
+const H4 = styled.h4`
+margin-top:7px;
+margin-bottom: 7px;
 `
 
 const RightNav = styled.div`
@@ -53,10 +79,11 @@ const Profile = styled.button`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  margin-left:5px;
   
 
   border-radius: 10px;
-  background-color: red;
+  /* background-color: red; */
   /* this section is created to display the user profile like what is his name and other things
  and also for the places created by that user
 
@@ -71,6 +98,7 @@ const Logout = styled.div`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  margin-left:5px;
 
   border-radius: 10px;
   background-color: red;
@@ -86,9 +114,10 @@ const PinDetails = styled.button`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  margin-left: 5px;
 
   border-radius: 10px;
-  background-color: red;
+  /* background-color: ; */
 `;
 
 
@@ -109,22 +138,61 @@ display: flex;
 justify-content: center;
 align-items: center;
 cursor:pointer;
+border:2px solid black;
 
 
 
 border-radius: 10px;
-background-color: red;
+/* background-color: red; */
 `
 
 const Card = styled.div`
   display: flex;
   flex-direction: column;
   width: 250px;
-  background-color: #63bab7;
+  border:2px solid black;
+  padding:5px;
+  /* background-color: #63bab7; */
 `;
 
 
 
+const PinsInfoContainer = styled.div`
+  display: grid;
+  
+  grid-gap: 25px;
+  margin-left: 20px;
+  margin-right: 20px;
+  z-index: 1;
+  margin-top: 10px;
+
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-auto-rows: 330px;
+`;
+
+const PinCard = styled.div`
+  display: flex;
+  background-color: white;
+  border: black solid 2px;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 10px;
+`;
+
+const PinCardHeader = styled.div`
+
+`
+const PinCardFooter = styled.div`
+
+`
+
+
+const PinDiv = styled.div`
+display:flex;
+
+
+
+`
 
 
 
@@ -238,25 +306,37 @@ function App() {
     <div style={{ height: "100vh", width: "100%" }}>
       <Navbar>
         <LeftNav>
-          <button
+          <HowToUse
             onClick={() => {
               setModalHow(true);
             }}
           >
             How to use?
-          </button>
+          </HowToUse>
 
-
-          <PinDetails onClick={()=>{setModalPins(true)}}>
+          <PinDetails
+            onClick={() => {
+              setModalPins(true);
+            }}
+          >
             Pins Info
             <FaMapMarked />
           </PinDetails>
         </LeftNav>
 
+        <MiddleNav>
+          {currentUser ? (
+            // <H4>Hello {currentUser}</H4>
+            <H4>Hi, {currentUser}</H4>
+          ) : (
+            <H4> please login</H4>
+          )}
+        </MiddleNav>
+
         <RightNav>
           {currentUser ? (
             <RightNav>
-              <Profile onClick={()=>setModalProfile(true)}>
+              <Profile onClick={() => setModalProfile(true)}>
                 Profile <CgProfile />
               </Profile>
               <Logout onClick={handleLogout}>Logout</Logout>
@@ -388,13 +468,11 @@ function App() {
           <CloseButtonFlex>
             <CloseButton onClick={closeModal}>
               Close
-              <AiFillCloseCircle size={20} color="blue" />
+              <AiFillCloseCircle size={20} color="red" />
             </CloseButton>
           </CloseButtonFlex>
           <h1>Details about the project</h1>
         </Modal>
-
-
         <Modal
           isOpen={modalPins}
           onRequestClose={closeModal}
@@ -403,14 +481,55 @@ function App() {
           <CloseButtonFlex>
             <CloseButton onClick={closeModal}>
               Close
-              <AiFillCloseCircle size={20} color="blue" />
+              <AiFillCloseCircle size={20} color="red" />
             </CloseButton>
           </CloseButtonFlex>
+          <PinsInfoContainer>
+            {pins.map((pin) => (
+              <PinCard>
+                <PinDiv>
+                   {pin.title}
+                    {pin.username}
+
+
+                </PinDiv>
+                <PinDiv>
+                  {pin.desc}
+
+                  
+                </PinDiv>
+                <PinDiv>
+                  {pin.rating}
+
+                  
+                </PinDiv>
+                <PinDiv>
+                  {pin.lat}
+
+                  
+                </PinDiv>
+                <PinDiv>
+                  {pin.long}
+
+                  
+                </PinDiv>
+
+
+              
+
+
+              </PinCard>
+            ))}
+            {/* <PinCard></PinCard>
+            <PinCard></PinCard>
+            <PinCard></PinCard>
+            <PinCard></PinCard>
+            <PinCard></PinCard>
+            <PinCard></PinCard> */}
+          </PinsInfoContainer>
+
           <h1>Details about the Pins</h1>
         </Modal>
-
-
-
         <Modal
           isOpen={modalProfile}
           onRequestClose={closeModal}
@@ -419,15 +538,11 @@ function App() {
           <CloseButtonFlex>
             <CloseButton onClick={closeModal}>
               Close
-              <AiFillCloseCircle size={20} color="blue" />
+              <AiFillCloseCircle size={20} color="red" />
             </CloseButton>
           </CloseButtonFlex>
           <h1>Details about the profile</h1>
         </Modal>
-
-
-
-
         {showRegister && <Register setShowRegister={setShowRegister} />}
         {showLogin && (
           <Login

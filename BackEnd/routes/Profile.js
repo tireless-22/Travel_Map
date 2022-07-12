@@ -16,7 +16,10 @@ router.post("/", async (req, res) => {
 router.get("/:user", async (req, res) => {
   const user = req.params.user;
   try {
-    const profile = await Profile.find({ user: user });
+    const profile = await Profile.find({ username: user });
+    if (!profile) {
+      res.status(200).json(-1);
+    }
     res.status(200).json(profile);
   } catch (err) {
     console.log("error occured in the api/pins/user");

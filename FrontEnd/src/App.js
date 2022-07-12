@@ -26,7 +26,7 @@ const Navbar = styled.div`
   flex-direction: row;
   justify-content: space-between;
   position: sticky;
-  background-color: #2B65EC;
+  background-color: #2b65ec;
 `;
 
 const LeftNav = styled.div`
@@ -54,6 +54,14 @@ const H4 = styled.h4`
   margin-top: 7px;
   margin-bottom: 7px;
 `;
+const H3 = styled.h4`
+  margin-top: 7px;
+  margin-bottom: 7px;
+`;
+const H2 = styled.h4`
+  margin-top: 7px;
+  margin-bottom: 7px;
+`;
 
 const RightNav = styled.div`
   display: flex;
@@ -75,6 +83,10 @@ const Profile = styled.button`
 
 
 */
+`;
+
+const Label = styled.label`
+  color: black;
 `;
 
 const Logout = styled.div`
@@ -129,13 +141,10 @@ const Card = styled.div`
 `;
 
 const PinCardTop = styled.div`
-
-display:flex;
-flex:7;
-flex-direction: column;
-
-
-`
+  display: flex;
+  flex: 7;
+  flex-direction: column;
+`;
 
 const PinsInfoHeading = styled.h1`
   margin-left: 20px;
@@ -175,7 +184,7 @@ const PinCardHeader = styled.div`
 `;
 const PinCardFooter = styled.div`
   display: flex;
-  flex:1;
+  flex: 1;
   margin-top: 0px;
 `;
 
@@ -185,42 +194,47 @@ const PinDiv = styled.div`
 `;
 
 const ProfileModalFlex = styled.div`
-display:flex;
-flex-direction:row;
-/* background-color: green; */
+  display: flex;
+  flex-direction: row;
+  /* background-color: green; */
 
-
-@media only screen and (max-width: 600px) {
-  flex-direction: column;
-  background-color: red;
-}
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+    background-color: red;
+  }
 `;
 
 const ProfileModalProfile = styled.div`
-display: flex;
-flex:1;
-flex-direction: column;
- /* background-color: yellow; */
-
-`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 10px;
+  /* background-color: yellow; */
+`;
 
 const TextField = styled.input`
   height: 30px;
   border: 2px solid black;
   margin-bottom: 5px;
-
-
-`
-
+  border-radius: 5px;
+`;
+const ProfileFormSubmitButton = styled.button`
+  width: 100px;
+  height: 40px;
+  background-color: black;
+  color: white;
+  border: 2px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+`;
 
 const ProfileModalCreatedPins = styled.div`
-display: flex;
-flex-direction: column;
-flex: 1;
-padding:10px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 10px;
+`;
 
-
-`
 function App() {
   const myStorage = window.localStorage;
   const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
@@ -255,7 +269,13 @@ function App() {
 
   const [modalPins, setModalPins] = useState(false);
 
-  const [modalProfile, setModalProfile] = useState({firstname:"",lastname:"",mobile:0,country:"",address:""});
+  const [modalProfile, setModalProfile] = useState({
+    firstname: "",
+    lastname: "",
+    mobile: 0,
+    country: "",
+    address: "",
+  });
 
   const [profileModalPins, setProfileModalPins] = useState([]);
 
@@ -269,17 +289,21 @@ function App() {
     setModalProfile(false);
   }
 
-  const  profileFn=async()=>{
+  const profileFn = async () => {
     try {
-      const res = await axios.get(`http://localhost:8800/api/profile/:${currentUser}`);
+      const res = await axios.get(
+        `http://localhost:8800/api/profile/${currentUser}`
+      );
       // console.log(res.data[0]);
-      setModalProfile(res.data[0]);
-      
-    }
-    catch (e) {
+      if (res.data[0]) {
+         setModalProfile(res.data[0]);
+        
+      }
+     
+    } catch (e) {
       console.log(e);
     }
-  }
+  };
 
   const ProfilePins = async () => {
     try {
@@ -292,8 +316,6 @@ function App() {
       console.log(e);
     }
   };
-
-
 
   useEffect(() => {
     const getPins = async () => {
@@ -347,6 +369,14 @@ function App() {
       console.log(err);
     }
   };
+
+  function onTextFieldChange(e) {
+    setModalProfile({ ...modalProfile, [e.target.name]: e.target.value });
+  }
+
+  function onFormSubmit(e) {
+    e.preventDefault();
+  }
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>
@@ -566,35 +596,75 @@ function App() {
           </CloseButtonFlex>
           <ProfileModalFlex>
             <ProfileModalProfile>
-              <TextField placeholder="first name" />
-              <TextField placeholder="last name" />
-              <TextField placeholder="mobile" />
-              <TextField placeholder="country" />
-              <TextField placeholder="address" />
+              <H3>Profile details</H3>
+              <Label>First Name</Label>
+
+              <TextField
+                placeholder="first name"
+                name="firstname"
+                value={modalProfile.firstname}
+                onChange={(e)=>onTextFieldChange(e)}
+              />
+              <Label>Last Name</Label>
+              <TextField
+                placeholder="last name"
+                name="lastname"
+                value={modalProfile.lastname}
+                onChange={(e) => onTextFieldChange(e)}
+              />
+              <Label>Mobile</Label>
+              <TextField
+                placeholder="mobile"
+                name="mobile"
+                value={modalProfile.mobile}
+                onChange={(e) => onTextFieldChange(e)}
+              />
+              <Label>Country</Label>
+              <TextField
+                placeholder="country"
+                name="country"
+                value={modalProfile.country}
+                onChange={(e) => onTextFieldChange(e)}
+              />
+              <Label>Address</Label>
+              <TextField
+                placeholder="address"
+                name="address"
+                value={modalProfile.address}
+                onChange={(e) => onTextFieldChange(e)}
+              />
+              <ProfileFormSubmitButton
+                onClick={(e) => {
+                  onFormSubmit(e);
+                }}
+              >
+                Update
+              </ProfileFormSubmitButton>
             </ProfileModalProfile>
             <ProfileModalCreatedPins>
-             
+              <H3>Pins Created By You</H3>
+
               {profileModalPins.map((pin) => (
-              <PinCard>
-                <PinCardTop>
-                  <PinCardHeader>
-                    <h2> {pin.title}</h2>
-                  </PinCardHeader>
-                  <PinDiv></PinDiv>
-                  <PinDiv>{pin.desc}</PinDiv>
+                <PinCard>
+                  <PinCardTop>
+                    <PinCardHeader>
+                      <h2> {pin.title}</h2>
+                    </PinCardHeader>
+                    <PinDiv></PinDiv>
+                    <PinDiv>{pin.desc}</PinDiv>
 
-                  <PinDiv> Latitude -> {pin.lat}</PinDiv>
-                  <PinDiv>Longitude -> {pin.long}</PinDiv>
+                    <PinDiv> Latitude -> {pin.lat}</PinDiv>
+                    <PinDiv>Longitude -> {pin.long}</PinDiv>
 
-                  <PinDiv>
-                    {Array(pin.rating).fill(<Star className="star" />)}(
-                    {pin.rating})
-                  </PinDiv>
-                </PinCardTop>
+                    <PinDiv>
+                      {Array(pin.rating).fill(<Star className="star" />)}(
+                      {pin.rating})
+                    </PinDiv>
+                  </PinCardTop>
 
-                <PinCardFooter>Review by {pin.username}</PinCardFooter>
-              </PinCard>
-            ))}
+                  <PinCardFooter>Review by {pin.username}</PinCardFooter>
+                </PinCard>
+              ))}
             </ProfileModalCreatedPins>
           </ProfileModalFlex>
         </Modal>

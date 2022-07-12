@@ -187,7 +187,7 @@ const PinDiv = styled.div`
 const ProfileModalFlex = styled.div`
 display:flex;
 flex-direction:row;
-background-color: green;
+/* background-color: green; */
 
 
 @media only screen and (max-width: 600px) {
@@ -198,13 +198,26 @@ background-color: green;
 
 const ProfileModalProfile = styled.div`
 display: flex;
- background-color: yellow;
+flex:1;
+flex-direction: column;
+ /* background-color: yellow; */
+
+`
+
+const TextField = styled.input`
+  height: 30px;
+  border: 2px solid black;
+  margin-bottom: 5px;
+
 
 `
 
 
 const ProfileModalCreatedPins = styled.div`
 display: flex;
+flex-direction: column;
+flex: 1;
+padding:10px;
 
 
 `
@@ -242,7 +255,9 @@ function App() {
 
   const [modalPins, setModalPins] = useState(false);
 
-  const [modalProfile, setModalProfile] = useState(false);
+  const [modalProfile, setModalProfile] = useState({firstname:"",lastname:"",mobile:0,country:"",address:""});
+
+  const [profileModalPins, setProfileModalPins] = useState([]);
 
   function openModal() {
     setModalHow(true);
@@ -257,14 +272,28 @@ function App() {
   const  profileFn=async()=>{
     try {
       const res = await axios.get(`http://localhost:8800/api/profile/:${currentUser}`);
-      console.log(res.data);
-      setModalProfile(res.data);
+      // console.log(res.data[0]);
+      setModalProfile(res.data[0]);
       
     }
     catch (e) {
       console.log(e);
     }
   }
+
+  const ProfilePins = async () => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8800/api/pins/${currentUser}`
+      );
+      console.log(res.data);
+      setProfileModalPins(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+
 
   useEffect(() => {
     const getPins = async () => {
@@ -343,29 +372,21 @@ function App() {
 
         <MiddleNav>
           <H4>TRAVEL MATE</H4>
-          {/* {currentUser ? (
-            // <H4>Hello {currentUser}</H4>
-            <H4>Hi, {currentUser}</H4>
-          ) : (
-            <H4> please login</H4>
-          )} */}
         </MiddleNav>
 
         <RightNav>
           {currentUser ? (
             <RightNav>
-              <Profile onClick={() => {
-                setModalProfile(true)
-                profileFn()
-              
-              }}>
+              <Profile
+                onClick={() => {
+                  setModalProfile(true);
+                  profileFn();
+                  ProfilePins();
+                }}
+              >
                 Profile <CgProfile />
               </Profile>
               <Logout onClick={handleLogout}>Logout</Logout>
-
-              {/* <button className="button logout" onClick={handleLogout}>
-                Log out
-              </button> */}
             </RightNav>
           ) : (
             <RightNav>
@@ -495,8 +516,6 @@ function App() {
           </CloseButtonFlex>
           <h1>Details about the project</h1>
         </Modal>
-
-
         <Modal
           isOpen={modalPins}
           onRequestClose={closeModal}
@@ -533,8 +552,6 @@ function App() {
               </PinCard>
             ))}
           </PinsInfoContainer>
-
-         
         </Modal>
         <Modal
           isOpen={modalProfile}
@@ -549,16 +566,36 @@ function App() {
           </CloseButtonFlex>
           <ProfileModalFlex>
             <ProfileModalProfile>
-              <h1>{modalProfile.firstname}</h1>
-              
-              
-
+              <TextField placeholder="first name" />
+              <TextField placeholder="last name" />
+              <TextField placeholder="mobile" />
+              <TextField placeholder="country" />
+              <TextField placeholder="address" />
             </ProfileModalProfile>
             <ProfileModalCreatedPins>
+             
+              {profileModalPins.map((pin) => (
+              <PinCard>
+                <PinCardTop>
+                  <PinCardHeader>
+                    <h2> {pin.title}</h2>
+                  </PinCardHeader>
+                  <PinDiv></PinDiv>
+                  <PinDiv>{pin.desc}</PinDiv>
 
+                  <PinDiv> Latitude -> {pin.lat}</PinDiv>
+                  <PinDiv>Longitude -> {pin.long}</PinDiv>
 
+                  <PinDiv>
+                    {Array(pin.rating).fill(<Star className="star" />)}(
+                    {pin.rating})
+                  </PinDiv>
+                </PinCardTop>
+
+                <PinCardFooter>Review by {pin.username}</PinCardFooter>
+              </PinCard>
+            ))}
             </ProfileModalCreatedPins>
-
           </ProfileModalFlex>
         </Modal>
         {showRegister && <Register setShowRegister={setShowRegister} />}

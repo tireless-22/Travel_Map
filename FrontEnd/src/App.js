@@ -254,6 +254,18 @@ function App() {
     setModalProfile(false);
   }
 
+  const  profileFn=async()=>{
+    try {
+      const res = await axios.get(`http://localhost:8800/api/profile/:${currentUser}`);
+      console.log(res.data);
+      setModalProfile(res.data);
+      
+    }
+    catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     const getPins = async () => {
       try {
@@ -342,7 +354,11 @@ function App() {
         <RightNav>
           {currentUser ? (
             <RightNav>
-              <Profile onClick={() => setModalProfile(true)}>
+              <Profile onClick={() => {
+                setModalProfile(true)
+                profileFn()
+              
+              }}>
                 Profile <CgProfile />
               </Profile>
               <Logout onClick={handleLogout}>Logout</Logout>
@@ -533,6 +549,7 @@ function App() {
           </CloseButtonFlex>
           <ProfileModalFlex>
             <ProfileModalProfile>
+              <h1>{modalProfile.firstname}</h1>
               
               
 

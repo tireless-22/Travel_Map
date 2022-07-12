@@ -30,7 +30,7 @@ export default function Login({setShowLogin,myStorage,setCurrentUser}) {
     <div className="loginContainer">
         <div className="logo">
             <Room/>
-            Travel Map
+            Travel Mate
         </div>
         <form onSubmit={handleSubmit}>
             <input type="text" placeholder="username" ref = {nameRef}/>

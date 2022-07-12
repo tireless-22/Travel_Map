@@ -17,6 +17,21 @@ router.post("/",async (req,res)=>{
 //     res.send("Heloo")
 // })
 
+
+router.get("/:user", async(req, res) => {
+    const user = req.params.user;
+    try {
+        const pins = await Pin.find({ user: user })
+        res.status(200).json(pins);
+    }
+    catch (err) {
+        console.log("error occured in the api/pins/user");
+        res.status(500).json(err);
+    }
+})
+
+
+
 router.get("/",async (req,res)=>{
     try{
         

@@ -26,6 +26,7 @@ const Navbar = styled.div`
   flex-direction: row;
   justify-content: space-between;
   position: sticky;
+  background-color: #2B65EC;
 `;
 
 const LeftNav = styled.div`
@@ -183,6 +184,30 @@ const PinDiv = styled.div`
   margin-top: 10px;
 `;
 
+const ProfileModalFlex = styled.div`
+display:flex;
+flex-direction:row;
+background-color: green;
+
+
+@media only screen and (max-width: 600px) {
+  flex-direction: column;
+  background-color: red;
+}
+`;
+
+const ProfileModalProfile = styled.div`
+display: flex;
+ background-color: yellow;
+
+`
+
+
+const ProfileModalCreatedPins = styled.div`
+display: flex;
+
+
+`
 function App() {
   const myStorage = window.localStorage;
   const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
@@ -305,12 +330,13 @@ function App() {
         </LeftNav>
 
         <MiddleNav>
-          {currentUser ? (
+          <H4>TRAVEL MATE</H4>
+          {/* {currentUser ? (
             // <H4>Hello {currentUser}</H4>
             <H4>Hi, {currentUser}</H4>
           ) : (
             <H4> please login</H4>
-          )}
+          )} */}
         </MiddleNav>
 
         <RightNav>
@@ -453,6 +479,8 @@ function App() {
           </CloseButtonFlex>
           <h1>Details about the project</h1>
         </Modal>
+
+
         <Modal
           isOpen={modalPins}
           onRequestClose={closeModal}
@@ -503,7 +531,18 @@ function App() {
               <AiFillCloseCircle size={20} color="red" />
             </CloseButton>
           </CloseButtonFlex>
-          <h1>Details about the profile</h1>
+          <ProfileModalFlex>
+            <ProfileModalProfile>
+              
+              
+
+            </ProfileModalProfile>
+            <ProfileModalCreatedPins>
+
+
+            </ProfileModalCreatedPins>
+
+          </ProfileModalFlex>
         </Modal>
         {showRegister && <Register setShowRegister={setShowRegister} />}
         {showLogin && (

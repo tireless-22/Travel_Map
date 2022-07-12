@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const app = express();
 const userRoute = require("./routes/users");
 const pinRoute = require("./routes/pins");
+const profileRoute = require("./routes/profile");
 const cors = require("cors")
 app.use(cors())
 dotenv.config();
@@ -24,6 +25,7 @@ mongoose
 
     app.use("/api/users",userRoute);
     app.use("/api/pins", pinRoute);
+    app.use("/api/profile", profileRoute);
 
 // app.get("/",(req,res)=>{
 //     res.send("Heloo")

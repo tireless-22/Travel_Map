@@ -1,43 +1,37 @@
+import { AiFillCloseCircle } from "react-icons/ai";
 
-import { AiFillCloseCircle } from "react-icons/ai"
-
-import { CgProfile } from "react-icons/cg"
-import {FaMapMarked} from "react-icons/fa"
+import { CgProfile } from "react-icons/cg";
+import { FaMapMarked } from "react-icons/fa";
 import "./App.css";
 import * as React from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useState } from "react";
-import { ControlCameraOutlined, Room, Star, StarBorder, SystemUpdate } from "@material-ui/icons";
+import {
+  ControlCameraOutlined,
+  Room,
+  Star,
+  StarBorder,
+  SystemUpdate,
+} from "@material-ui/icons";
 import axios from "axios";
 import { format } from "timeago.js";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import styled from "styled-components"
+import styled from "styled-components";
 import Modal from "react-modal";
 
-
-
 const Navbar = styled.div`
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-
-
-
-
-`
-
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: sticky;
+`;
 
 const LeftNav = styled.div`
-
-display:flex;
-justify-content: space-around;
-
-
-
-
-`
+  display: flex;
+  justify-content: space-around;
+`;
 
 const HowToUse = styled.button`
   padding: 5px;
@@ -51,27 +45,19 @@ const HowToUse = styled.button`
   /* background-color: red; */
 `;
 
-
 const MiddleNav = styled.div`
-display: flex;
-
-
-
-`
+  display: flex;
+`;
 
 const H4 = styled.h4`
-margin-top:7px;
-margin-bottom: 7px;
-`
+  margin-top: 7px;
+  margin-bottom: 7px;
+`;
 
 const RightNav = styled.div`
-display:flex;
-justify-content: space-around;
-
-
-
-`
-
+  display: flex;
+  justify-content: space-around;
+`;
 
 const Profile = styled.button`
   padding: 5px;
@@ -79,8 +65,7 @@ const Profile = styled.button`
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  margin-left:5px;
-  
+  margin-left: 5px;
 
   border-radius: 10px;
   /* background-color: red; */
@@ -91,21 +76,17 @@ const Profile = styled.button`
 */
 `;
 
-
 const Logout = styled.div`
   padding: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  margin-left:5px;
+  margin-left: 5px;
 
   border-radius: 10px;
   background-color: red;
 `;
-
-
-
 
 const PinDetails = styled.button`
   /* this pinDetails show the info about the pins that are created by different users */
@@ -120,53 +101,55 @@ const PinDetails = styled.button`
   /* background-color: ; */
 `;
 
-
-
-
-
 const CloseButtonFlex = styled.div`
-display:flex;
-flex-direction: row-reverse;
-
-`
-
-
+  display: flex;
+  flex-direction: row-reverse;
+`;
 
 const CloseButton = styled.div`
-padding: 5px;
-display: flex;
-justify-content: center;
-align-items: center;
-cursor:pointer;
-border:2px solid black;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid black;
 
-
-
-border-radius: 10px;
-/* background-color: red; */
-`
+  border-radius: 10px;
+  /* background-color: red; */
+`;
 
 const Card = styled.div`
   display: flex;
   flex-direction: column;
   width: 250px;
-  border:2px solid black;
-  padding:5px;
+  border: 2px solid black;
+  padding: 5px;
   /* background-color: #63bab7; */
 `;
 
+const PinCardTop = styled.div`
 
+display:flex;
+flex:7;
+flex-direction: column;
+
+
+`
+
+const PinsInfoHeading = styled.h1`
+  margin-left: 20px;
+`;
 
 const PinsInfoContainer = styled.div`
   display: grid;
-  
+
   grid-gap: 25px;
   margin-left: 20px;
   margin-right: 20px;
   z-index: 1;
   margin-top: 10px;
 
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-auto-rows: 330px;
 `;
 
@@ -175,27 +158,30 @@ const PinCard = styled.div`
   background-color: white;
   border: black solid 2px;
   flex-direction: column;
+
   padding: 10px;
   border-radius: 10px;
 `;
 
 const PinCardHeader = styled.div`
-
-`
+  display: flex;
+  background-color: black;
+  height: 70px;
+  color: white;
+  flex-direction: center;
+  justify-content: center;
+  border-radius: 10px;
+`;
 const PinCardFooter = styled.div`
-
-`
-
+  display: flex;
+  flex:1;
+  margin-top: 0px;
+`;
 
 const PinDiv = styled.div`
-display:flex;
-
-
-
-`
-
-
-
+  display: flex;
+  margin-top: 10px;
+`;
 
 function App() {
   const myStorage = window.localStorage;
@@ -223,13 +209,9 @@ function App() {
     zoom: 4,
   });
 
-
   // console.log(star);
-  
 
   const [modalIsOpen, setIsOpen] = React.useState(false);
-
-
 
   const [modalHow, setModalHow] = useState(false);
 
@@ -239,7 +221,6 @@ function App() {
 
   function openModal() {
     setModalHow(true);
-
   }
 
   function closeModal() {
@@ -247,7 +228,6 @@ function App() {
     setModalPins(false);
     setModalProfile(false);
   }
-
 
   useEffect(() => {
     const getPins = async () => {
@@ -284,7 +264,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("clicked the submit button")
+    console.log("clicked the submit button");
     const newPin = {
       username: currentUser,
       title,
@@ -484,51 +464,33 @@ function App() {
               <AiFillCloseCircle size={20} color="red" />
             </CloseButton>
           </CloseButtonFlex>
+          <PinsInfoHeading>Pinned Details</PinsInfoHeading>
+
           <PinsInfoContainer>
             {pins.map((pin) => (
               <PinCard>
-                <PinDiv>
-                   {pin.title}
-                    {pin.username}
+                <PinCardTop>
+                  <PinCardHeader>
+                    <h2> {pin.title}</h2>
+                  </PinCardHeader>
+                  <PinDiv></PinDiv>
+                  <PinDiv>{pin.desc}</PinDiv>
 
+                  <PinDiv> Latitude -> {pin.lat}</PinDiv>
+                  <PinDiv>Longitude -> {pin.long}</PinDiv>
 
-                </PinDiv>
-                <PinDiv>
-                  {pin.desc}
+                  <PinDiv>
+                    {Array(pin.rating).fill(<Star className="star" />)}(
+                    {pin.rating})
+                  </PinDiv>
+                </PinCardTop>
 
-                  
-                </PinDiv>
-                <PinDiv>
-                  {pin.rating}
-
-                  
-                </PinDiv>
-                <PinDiv>
-                  {pin.lat}
-
-                  
-                </PinDiv>
-                <PinDiv>
-                  {pin.long}
-
-                  
-                </PinDiv>
-
-
-              
-
-
+                <PinCardFooter>Review by {pin.username}</PinCardFooter>
               </PinCard>
             ))}
-            {/* <PinCard></PinCard>
-            <PinCard></PinCard>
-            <PinCard></PinCard>
-            <PinCard></PinCard>
-            <PinCard></PinCard>
-            <PinCard></PinCard> */}
           </PinsInfoContainer>
 
-          <h1>Details about the Pins</h1>
+         
         </Modal>
         <Modal
           isOpen={modalProfile}

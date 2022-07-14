@@ -37,7 +37,34 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
-  console.log(req.body);
+   const prof = {};
+   prof.username = req.body.username;
+   prof.firstname = req.body.firstname;
+   prof.lastname = req.body.lastname;
+   prof.mobile = req.body.mobile;
+   prof.country = req.body.country;
+   prof.address = req.body.address;
+  console.log(prof);
+  
+  Profile.updateOne({ username: prof.username }, prof)
+    .then(() => {
+      res.status(200).json({
+        message: "Thing updated successfully!",
+      });
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error,
+      });
+    });
+
+  
+  
+
+
+
+   
+  
 });
 
 router.get("/:user", async (req, res) => {
@@ -55,3 +82,38 @@ router.get("/:user", async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+// app.put("/api/stuff/:id", (req, res, next) => {
+//   const thing = new Thing({
+//     _id: req.params.id,
+//     title: req.body.title,
+//     description: req.body.description,
+//     imageUrl: req.body.imageUrl,
+//     price: req.body.price,
+//     userId: req.body.userId,
+//   });
+//   Thing.updateOne({ _id: req.params.id }, thing)
+    // .then(() => {
+    //   res.status(201).json({
+    //     message: "Thing updated successfully!",
+    //   });
+    // })
+    // .catch((error) => {
+    //   res.status(400).json({
+    //     error: error,
+    //   });
+    // });
+// });
+
+
+
+
+
+
+
+
+
+
+

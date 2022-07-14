@@ -254,6 +254,8 @@ function App() {
   const [showLogin, setShowLogin] = React.useState(false);
 
   const [showUsage, setShowUsage] = useState(true);
+  const [check, setCheck] = useState(false);
+  const [subForm, setSubForm] = useState("");
 
   const [viewport, setViewport] = useState({
     latitude: 47.040182,
@@ -269,6 +271,8 @@ function App() {
 
   const [modalPins, setModalPins] = useState(false);
 
+  const [modalProf, setModalProf] = useState(false);
+
   const [modalProfile, setModalProfile] = useState({
     firstname: "",
     lastname: "",
@@ -276,6 +280,7 @@ function App() {
     country: "",
     address: "",
   });
+  // console.log("Hello",modalPins);
 
   const [profileModalPins, setProfileModalPins] = useState([]);
 
@@ -286,17 +291,36 @@ function App() {
   function closeModal() {
     setModalHow(false);
     setModalPins(false);
-    setModalProfile(false);
+    setModalProf(false);
   }
 
   const profileFn = async () => {
+
+    setModalProfile({
+      firstname: "",
+      lastname: "",
+      mobile: 0,
+      country: "",
+      address: "",
+    });
+
+
+
     try {
       const res = await axios.get(
         `http://localhost:8800/api/profile/${currentUser}`
       );
-      // console.log(res.data[0]);
+
+      console.log(res.data[0]);
+      console.log(currentUser);
       if (res.data[0]) {
-         setModalProfile(res.data[0]);
+        console.log("check if the user has profile or not");
+        setModalProfile(res.data[0]);
+        setCheck(true);
+        
+      }
+      else {
+        setCheck(false);
         
       }
      
@@ -310,7 +334,7 @@ function App() {
       const res = await axios.get(
         `http://localhost:8800/api/pins/${currentUser}`
       );
-      console.log(res.data);
+      // console.log(res.data);
       setProfileModalPins(res.data);
     } catch (e) {
       console.log(e);
@@ -322,7 +346,7 @@ function App() {
       try {
         const res = await axios.get("http://localhost:8800/api/pins");
         setPins(res.data);
-        console.log(res.data, "res");
+        // console.log(res.data, "res");
       } catch (err) {
         console.log(err);
       }
@@ -336,7 +360,7 @@ function App() {
   };
 
   const handleAddClick = (e) => {
-    console.log(e.lngLat.lng, "lat lng");
+    // console.log(e.lngLat.lng, "lat lng");
     // const longitude = e.lngLat.lng;
 
     setNewPlace({
@@ -352,7 +376,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("clicked the submit button");
+    // console.log("clicked the submit button");
     const newPin = {
       username: currentUser,
       title,
@@ -375,7 +399,31 @@ function App() {
   }
 
   function onFormSubmit(e) {
+
     e.preventDefault();
+    console.log(modalProfile)
+    console.log(check);
+    modalProfile['username'] = currentUser;
+    console.log(modalProfile);
+    // console.log(modalProf);
+
+    if (check) {
+      console.log("check true")
+      axios.put("http://localhost:8800/api/profile", modalProfile);
+      setSubForm("You profile had been modified!");
+      
+      
+    }
+    else {
+      console.log("check false");
+      axios.post("http://localhost:8800/api/profile", modalProfile);
+      setSubForm("You profile had been created!");
+      
+    }
+    
+
+
+
   }
 
   return (
@@ -409,7 +457,8 @@ function App() {
             <RightNav>
               <Profile
                 onClick={() => {
-                  setModalProfile(true);
+                  setModalProf(true);
+                  
                   profileFn();
                   ProfilePins();
                 }}
@@ -454,7 +503,7 @@ function App() {
         mapStyle="mapbox://styles/mapbox/streets-v9"
         onDblClick={handleAddClick}
       >
-        console.log(pins);
+        {/* console.log(pins); */}
         {pins.map((p) => (
           <>
             <Marker longitude={p.long} latitude={p.lat} anchor="bottom">
@@ -527,6 +576,7 @@ function App() {
                 <button className="submitButton" type="submit">
                   Add Pin
                 </button>
+                <H3>{subForm}</H3>
               </form>
             </div>
           </Popup>
@@ -584,7 +634,7 @@ function App() {
           </PinsInfoContainer>
         </Modal>
         <Modal
-          isOpen={modalProfile}
+          isOpen={modalProf}
           onRequestClose={closeModal}
           contentLabel="Example Modal"
         >

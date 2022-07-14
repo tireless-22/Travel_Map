@@ -2,15 +2,42 @@ const router = require("express").Router();
 const { json } = require("express");
 const Profile = require("../models/Profile");
 
+//  const prof = {};
+//  prof.username = req.body.username;
+//  prof.firstname = req.body.firstname;
+//  prof.lastname = req.body.lastname;
+//  prof.mobile = req.body.mobile;
+//  prof.country = req.body.country;
+//  prof.address = req.body.address;
+//  console.log(prof);
+
+
+
+
 router.post("/", async (req, res) => {
-  const newProfile = new Profile(req.body);
-  console.log(req.body);
+  const prof = {}
+  prof.username = req.body.username;
+  prof.firstname = req.body.firstname;
+  prof.lastname = req.body.lastname;
+  prof.mobile = req.body.mobile;
+  prof.country = req.body.country;
+  prof.address = req.body.address;
+  console.log(prof);
+  
+    // res.json("Hello")
+  
   try {
+  const newProfile = new Profile(prof);
     const savedProfile = await newProfile.save();
-    res.status(200).json(newProfile);
+    console.log("Hello")
+    res.status(200).json(savedProfile);
   } catch (err) {
     res.status(500).json(err);
   }
+});
+
+router.put("/", async (req, res) => {
+  console.log(req.body);
 });
 
 router.get("/:user", async (req, res) => {
